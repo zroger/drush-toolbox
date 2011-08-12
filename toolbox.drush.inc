@@ -171,26 +171,80 @@ function drush_toolbox_ctags() {
 }
 
 /**
+ * Validation callback for `drush toolbox-server`
+ */
+function drush_toolbox_server_validate($arg = 'start') {
+  if (!in_array($arg, array('start', 'stop', 'restart', 'graceful'))) {
+    return drush_set_error('DRUSH_TOOLBOX_SERVER_INVALID_ARG', dt('Invalid argument.'));
+  }
+
+  // The tmp_dir is set by the first of these conditions.
+  // 1. Via the --tmp-dir option.
+  // 2. A directory named the same as the current site-alias being used.
+  // 3. A random temp directory created by drush.
+  $tmp_dir = drush_get_option('tmp-dir', FALSE);
+  if (empty($tmp_dir)) {
+    // Try to use the alias if available.
+    $alias_context = drush_get_context('alias');
+    if (!empty($alias_context['name'])) {
+      $tmp_dir = drush_find_tmp() .'/'. str_replace('@', '', $alias_context['name']);
+    }
+    // Last resort.  Let drush create a temp dir.
+    else {
+      $tmp_dir = drush_tempdir();
+    }
+  }
+  // Ensure the tmp_dir exists.
+  if (!drush_mkdir($tmp_dir)) {
+    return drush_set_error('DRUSH_SERVER_NO_TMP_DIR', dt('Unable to create temporary directory !dir.', array('dir' => $tmp_dir)));
+  }
+  drush_set_option('tmp-dir', $tmp_dir);
+
+  $uri = drush_get_context('DRUSH_URI');
+
+  // The host gets set by the first of these conditions.
+  // 1. Via the --host parameter.
+  // 2. The host specified in the DRUSH_URI context.
+  // 3. 'localhost' if all else fails.
+  $host = drush_get_option('host', parse_url($uri, PHP_URL_HOST));
+  empty($host) && ($host = 'localhost');
+  drush_set_option('host', $host);
+
+  // The port gets set by the first of these conditions.
+  // 1. Via the --port parameter.
+  // 2. The port specified in the DRUSH_URI context.
+  // 3. 3000 if all else fails.
+  // TODO: if port < 1024, ensure that user has is root or sudo.
+  $port = drush_get_option('port', parse_url($uri, PHP_URL_PORT));
+  empty($port) && ($port = 3000);
+  drush_set_option('port', $port);
+
+  $log_dir = drush_get_option(array('log-dir'), "$tmp_dir/log");
+  // Ensure the log_dir exists.
+  if (!drush_mkdir($log_dir)) {
+    return drush_set_error('DRUSH_SERVER_NO_LOG_DIR', dt('Unable to create log directory !dir.', array('dir' => $log_dir)));
+  }
+  drush_set_option('log-dir', $log_dir);
+
+  drush_set_context('DRUSH_TOOLBOX_SERVER_CONF_FILE', "$tmp_dir/httpd.conf");
+}
+
+/**
  * Command callback for `drush toolbox-server`
  *
  * Start server in the Drupal root with the version specific start script.
  */
 function drush_toolbox_server($arg = 'start') {
-  if (!in_array($arg, array('start', 'stop', 'restart', 'graceful'))) {
-    return drush_set_error('DRUSH_TOOLBOX_SERVER_INVALID_ARG', dt('Invalid argument.'));
-  }
-
   if ($arg == 'start') {
     drush_print(dt('Starting server...'));
   }
 
   $root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  $conf = _drush_server_conf($root);
-  _drush_server_create_conf_file($root);
+  $conf_file = _drush_server_create_conf_file();
 
   $command = join(' ', array(
     'apachectl',
-    "-f \"{$conf['conf_file']}\"",
+    "-f \"{$conf_file}\"",
     "-k \"$arg\"",
   ));
 
@@ -202,10 +256,12 @@ function drush_toolbox_server($arg = 'start') {
   $output = drush_shell_exec_output();
   if (!empty($output)) {
     foreach ($output as $line) {
+      // TODO: parse the output from apachectl to get better messages.
       drush_log($line, 'warning');
     }
   }
 
+  $conf = _drush_server_conf();
   switch ($arg) {
     case 'start':
       drush_log(dt('Server started on !host:!port.', array('!host' => $conf['host'], '!port' => $conf['port'])), 'ok');
@@ -214,11 +270,12 @@ function drush_toolbox_server($arg = 'start') {
         drush_print(dt('    Error log:             !log_dir/error_log', array('!log_dir' => $conf['log_dir'])));
         drush_print(dt('    Access log:            !log_dir/access_log', array('!log_dir' => $conf['log_dir'])));
       }
-
       break;
+
     case 'stop':
       drush_log(dt('Server stopped on !host:!port.', array('!host' => $conf['host'], '!port' => $conf['port'])), 'ok');
       break;
+
     case 'restart':
     case 'graceful':
       drush_log(dt('Server restarted on !host:!port.', array('!host' => $conf['host'], '!port' => $conf['port'])), 'ok');
@@ -227,40 +284,15 @@ function drush_toolbox_server($arg = 'start') {
 }
 
 /**
- * Build an array of config variables needed to build the temporary httpd conf
- * file.
+ * Consolidate all server options and settings into one array.
  */
-function _drush_server_conf($root) {
-  static $conf = array();
-
-  if (empty($conf)) {
-    $conf['tmp_dir'] = drush_get_option(array('tmp-dir'), FALSE);
-    if (empty($conf['tmp_dir'])) {
-      // Try to use the alias if available.
-      $alias_context = drush_get_context('alias');
-      if (!empty($alias_context['name'])) {
-        $conf['tmp_dir'] = drush_find_tmp() .'/'. str_replace('@', '', $alias_context['name']);
-      }
-      // Last resort.  Let drush create a temp dir.
-      else {
-        $conf['tmp_dir'] = drush_tempdir();
-      }
-    }
-    $conf['host'] = drush_get_option(array('host', 'h'), 'localhost');
-    $conf['port'] = drush_get_option(array('port', 'p'), 3000);
-    $conf['log_dir'] = drush_get_option(array('log-dir'), $conf['tmp_dir'] .'/log');
-
-    $conf['doc_root'] = $root;
-    $conf['conf_file'] = $conf['tmp_dir'] .'/httpd.conf';
-
-    if (!drush_mkdir($conf['tmp_dir'])) {
-      return drush_set_error('DRUSH_SERVER_NO_TMP_DIR', dt('Unable to create temporary directory !dir.', array('dir' => $conf['tmp_dir'])));
-    }
-
-    if (!drush_mkdir($conf['log_dir'])) {
-      return drush_set_error('DRUSH_SERVER_NO_LOG_DIR', dt('Unable to create log directory !dir.', array('dir' => $conf['log_dir'])));
-    }
-  }
+function _drush_server_conf() {
+  $conf['conf_file'] = drush_get_context('DRUSH_TOOLBOX_SERVER_CONF_FILE');
+  $conf['doc_root'] = drush_get_context('DRUSH_DRUPAL_ROOT');;
+  $conf['tmp_dir'] = drush_get_option('tmp-dir');
+  $conf['log_dir'] = drush_get_option('log-dir');
+  $conf['host'] = drush_get_option('host');
+  $conf['port'] = drush_get_option('port');
 
   return $conf;
 }
@@ -268,11 +300,11 @@ function _drush_server_conf($root) {
 /**
  * Build the temporary httpd conf file for this docroot.
  */
-function _drush_server_create_conf_file($root) {
-  $conf = _drush_server_conf($root);
+function _drush_server_create_conf_file() {
+  $command = drush_get_command();
+  $template = $command['path'] .'/includes/httpd_osx.conf';
 
-  $commands = drush_get_commands();
-  $template = $commands['server']['path'] .'/includes/httpd_osx.conf';
+  $conf = _drush_server_conf();
 
   $directives[] = "#";
   $directives[] = "# Base configuration from $conf[conf_file]";
