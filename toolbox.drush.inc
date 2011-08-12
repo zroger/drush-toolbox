@@ -23,16 +23,39 @@ function toolbox_drush_command() {
     'description' => 'Run an interactive shell in the current Drupal environment. Requires a phpsh (http://phpsh.org/).',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'aliases' => array('console'),
+    'options' => array(
+      'phpsh' => 'Specify the path to the phpsh executable.  If not provided, `which phpsh` will be used.',
+    ),
+    'examples' => array(
+      'drush console' => 'Start a console using default options.  Assumes a configured Drupal root can be located by drush and the phpsh executable can be located with `which phpsh`.',
+      'drush @local console' => 'Start a console using a drush site alias.  This allows you to start a console without first changing to the appropriate directory or specifying a root and/or uri parameter for drush.',
+      'drush console --phpsh=/usr/local/bin/phpsh' => 'Specify where to find phpsh, in case it is not in your $PATH variable, or not the first one found.',
+    ),
   );
   $items['toolbox-ctags'] = array(
     'description' => 'Generate a "tags" file using exuberant ctags. Requires exuberant ctags.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'aliases' => array('ctags'),
+    'options' => array(
+      'ctags' => 'Specify the path to the ctags executable.  If not provided, `which ctags` will be used.',
+    ),
+    'examples' => array(
+      'drush ctags' => 'Create a tags file in the current drupal root.',
+      'drush @local ctags' => 'Specify a drush site alias to use.  The tags file will be created in the root specified by the alias.',
+      'drush ctags --ctags=/usr/local/bin/ctags' => 'Specify where to find the ctags executable, in case it is not in your $PATH variable, or not the first one found.',
+    ),
   );
   $items['toolbox-server'] = array(
     'description' => 'Start a simple server from the command-line with your Drupal root as the document root.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'aliases' => array('server'),
+    'arguments' => array(
+      'action' => 'Signal to start, restart or stop the apache daemon.  Defaults to start.  (start|restart|stop)',
+    ),
+    'examples' => array(
+      'drush server' => 'Start a server using default options.',
+      'drush @local server' => 'Start a server using a drush site alias.  This allows you to start the server without first changing to the appropriate directory or specifying a root and/or uri parameter for drush.',
+    ),
   );
   return $items;
 }
