@@ -56,6 +56,7 @@ function toolbox_drush_command() {
       'host' => 'Specify the host to use as the ServerName for apache.  If not specified, drush will attempt to retrieve the hostname from the uri context (set with the --uri option), and finally fall back to using "localhost" as the default.',
       'port' => 'Specify the port for apache to listen on.  If not specified, drush will attempt to retrieve the port from the uri context (set with the --uri option), and finally fall back to using 3000 as the default.  Using a port lower than 1024 will require running this command as root.',
       'conf-dir' => 'The directory to store the configuration and log files necessary for running apache.  If not specified, drush will create a directory named ".drush-server" in the site root.',
+			'extra-conf' => 'Specify a file to include.'
     ),
     'examples' => array(
       'drush server' => 'Start a server using default options.',
@@ -210,6 +211,12 @@ function drush_toolbox_server_validate($arg = 'start') {
   empty($port) && ($port = 3000);
   drush_set_option('port', $port);
 
+	// Make sure that the extra conf file exists
+	$extra_conf = drush_get_option('extra-conf', '');
+	if (!empty($extra_conf) && !file_exists($extra_conf)) {
+		drush_set_error('DRUSH_TOOLBOX_SERVER_NOT_FOUND', dt('Cannot find extra config file.'));
+	}
+
   $log_dir = drush_get_option(array('log-dir'), "$conf_dir/log");
   // Ensure the log_dir exists.
   if (!drush_mkdir($log_dir)) {
@@ -284,6 +291,7 @@ function _drush_server_conf() {
   $conf['log_dir'] = drush_get_option('log-dir');
   $conf['host'] = drush_get_option('host');
   $conf['port'] = drush_get_option('port');
+  $conf['extra_conf'] = drush_get_option('extra-conf');
 
   return $conf;
 }
@@ -321,6 +329,12 @@ function _drush_server_create_conf_file() {
   $directives[] = "<Directory \"$conf[doc_root]\">";
   $directives[] = "  AllowOverride all";
   $directives[] = "</Directory>";
+
+	if (!empty($conf['extra_conf'])) {
+	  $directives[] = '';
+	  $directives[] = "# Extra Include files";
+	  $directives[] = "Include $conf[extra_conf]";	
+	}
 
   $content = join("\n", $directives);
   file_put_contents($conf['conf_file'], $content);
