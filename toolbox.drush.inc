@@ -105,7 +105,7 @@ function drush_toolbox_console() {
   $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
   $_SERVER['SCRIPT_NAME'] = '/index.php';
   $_SERVER['REQUEST_URI'] = '/';
-  $_SERVER['HTTP_HOST'] = drush_get_context('DRUSH_URI');
+  $_SERVER['HTTP_HOST'] = parse_url(drush_get_context('DRUSH_URI'), PHP_URL_HOST);
 
   $root = drush_get_context('DRUSH_DRUPAL_ROOT');
   $phpsh = drush_get_option('phpsh');
@@ -117,6 +117,7 @@ function drush_toolbox_console() {
 
   if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print('Executing: ' . $command);
+    drush_print_r($_SERVER);
   }
 
   proc_close(proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes, $root, $_SERVER));
