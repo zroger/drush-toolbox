@@ -55,7 +55,7 @@ function toolbox_drush_command() {
     'options' => array(
       'host' => 'Specify the host to use as the ServerName for apache.  If not specified, drush will attempt to retrieve the hostname from the uri context (set with the --uri option), and finally fall back to using "localhost" as the default.',
       'port' => 'Specify the port for apache to listen on.  If not specified, drush will attempt to retrieve the port from the uri context (set with the --uri option), and finally fall back to using 3000 as the default.  Using a port lower than 1024 will require running this command as root.',
-      'conf-dir' => 'The directory to store the configuration and log files necessary for running apache.  If not specified, drush will try to create a directory in the system\'s temp directory, using the site-alias name if available.',
+      'conf-dir' => 'The directory to store the configuration and log files necessary for running apache.  If not specified, drush will create a directory named ".drush-server" in the site root.',
     ),
     'examples' => array(
       'drush server' => 'Start a server using default options.',
@@ -183,23 +183,8 @@ function drush_toolbox_server_validate($arg = 'start') {
     return drush_set_error('DRUSH_TOOLBOX_SERVER_INVALID_ARG', dt('Invalid argument.'));
   }
 
-  // The conf_dir is set by the first of these conditions.
-  // 1. Via the --conf-dir option.
-  // 2. A directory named the same as the current site-alias being used.
-  // 3. A random temp directory created by drush.
-  $conf_dir = drush_get_option('conf-dir', FALSE);
-  if (empty($conf_dir)) {
-    // Try to use the alias if available.
-    $alias_context = drush_get_context('alias');
-    if (!empty($alias_context['name'])) {
-      $conf_dir = drush_find_tmp() .'/'. str_replace('@', '', $alias_context['name']);
-    }
-    // Last resort.  Let drush create a temp dir.
-    else {
-      $conf_dir = drush_tempdir();
-    }
-  }
-  // Ensure the conf_dir exists.
+  // Use a hidden .drush-server directory if conf-dir is not specified.
+  $conf_dir = drush_get_option('conf-dir', drush_get_context('DRUSH_DRUPAL_ROOT') .'/.drush-server');
   if (!drush_mkdir($conf_dir)) {
     return drush_set_error('DRUSH_SERVER_NO_CONF_DIR', dt('Unable to create temporary directory !dir.', array('dir' => $conf_dir)));
   }
