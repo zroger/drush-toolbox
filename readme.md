@@ -12,8 +12,7 @@ server from the command-line with your Drupal root as the document root.
 ## drush console
 
 Run an interactive shell in the current Drupal environment. Requires a valid 
-[phpsh](http://phpsh.org/) installation.  Currently only supports Drupal 7, 
-though support for Drupal 6 would likely trivial.  *Patches welcome.*
+[phpsh](http://phpsh.org/) installation.
 
 ## drush ctags
 
