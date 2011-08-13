@@ -1,0 +1,8 @@
+permalink: /releases/:title.html
+project:
+  title: Drush Developers' Toolbox
+  short_name: drush-toolbox
+  project_status: 1
+  link: http://github.com/zroger/drush-toolbox
+  type: Modules
+  

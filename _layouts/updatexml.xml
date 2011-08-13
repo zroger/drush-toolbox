@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'}}
+<project xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title>{{ site.project.title }}</title>
+  <short_name>{{ site.project.short_name }}</short_name>
+  <api_version>{{ page.api_version }}</api_version>
+  <recommended_major>{{ page.recommended_major }}</recommended_major>
+  <supported_majors>{{ page.supported_majors }}</supported_majors>
+  <default_major>{{ page.recommended_major }}</default_major>
+  <project_status>1</project_status>
+  <link>{{ site.project.link }}</link>
+  <terms>
+    <term>
+      <name>Projects</name>
+      <value>{{ site.project.type }}</value>
+    </term>
+  </terms>
+  <releases>
+    {% for post in site.posts %}
+      {% if post.api_version == page.api_version %}
+        <release>
+          <name>{{ post.title }}</name>
+          <date>{{ post.date }}</date>
+          <version>{{ post.version }}</version>
+          <version_major>{{ post.version_major }}</version_major>
+          <version_patch>{{ post.version_patch }}</version_patch>
+          {% if post.version_extra %}<version_extra>{{ post.version_extra }}</version_extra>{% endif %}
+          <status>published</status>
+          <release_link>{{ post.permalink }}</release_link>
+          <download_link>{{ post.download_link }}</download_link>
+          <mdhash>{{ post.download_hash }}</mdhash>
+          <filesize>{{ post.download_size }}</filesize>
+          {% if post.security_release %}<terms>
+            <term>
+              <name>Release type</name>
+              <value>Security update</value>
+            </term>
+          </terms>{% endif %}
+        </release>
+      {% endif %}
+    {% endfor %}
+  </releases>
+</project>
