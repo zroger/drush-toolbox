@@ -24,7 +24,7 @@
       <version_extra>alpha1</version_extra>
       <status>published</status>
       <release_link>https://github.com/zroger/drush-toolbox/tree/7.x-1.0-alpha1</release_link>
-      <download_link>https://github.com/zroger/drush-toolbox/tarball/7.x-1.0-alpha1</download_link>
+      <download_link>https://nodeload.github.com/zroger/drush-toolbox/tarball/7.x-1.0-alpha1</download_link>
       <date>1313262200</date>
       <mdhash>ede0ceb746c93f8bf656cec6e4d1b5ff</mdhash>
       <filesize>4646</filesize>
