@@ -9,15 +9,15 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="/css/normalize.css">
-	<link rel="stylesheet" href="/css/syntax.css">
-	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="{{ site.baseurl }}/css/normalize.css">
+	<link rel="stylesheet" href="{{ site.baseurl }}/css/syntax.css">
+	<link rel="stylesheet" href="{{ site.baseurl }}/css/style.css">
 
 </head>
 <body>
 	<div id="page-container">
 		<header>
-			<h1 id="title"><a href="/">{{ site.name }}</a></h1>
+			<h1 id="title"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
 			<nav>
 				<ul>
 					<li><a href="{{ site.project.link }}">Fork it on GitHub</a></li>
