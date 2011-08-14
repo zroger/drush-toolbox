@@ -1,0 +1,46 @@
+---
+layout: default
+---
+
+{{ content }}
+
+<h2>Releases</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Download</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for post in site.posts %}
+    {% if post.layout == 'release' %}
+    <tr class="{% cycle 'odd', 'even' %}">
+      <td><a href="{{ post.url }}">{{ post.title }}</a></td>
+      <td><a href="{{ post.download_link }}">tar.gz ({{ post.download_size }})</a></td>
+      <td>{{ post.date | date_to_string }}</td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+
+
+<figure>
+  <figcaption>Installation via drush</figcaption>
+
+{% highlight sh %}
+drush --source=http://{{ site.project.user }}.github.com {{ site.project.short_name }}
+{% endhighlight %}
+
+</figure>
+
+<figure>
+  <figcaption>For <code>drush make</code> makefiles</figcaption>
+
+{% highlight ini %}
+projects[{{ site.project.short_name }}][location] = http://{{ site.project.user }}.github.com
+{% endhighlight %}
+
+</figure>

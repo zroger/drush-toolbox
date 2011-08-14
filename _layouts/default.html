@@ -1,0 +1,47 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.name }}</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="/css/normalize.css">
+	<link rel="stylesheet" href="/css/syntax.css">
+	<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+	<div id="page-container">
+		<header>
+			<h1 id="title"><a href="/">{{ site.name }}</a></h1>
+			<nav>
+				<ul>
+					<li><a href="{{ site.project.link }}">Fork it on GitHub</a></li>
+				</ul>
+			</nav>
+		</header>
+
+    {% if page.title %}<h2>{{ page.title }}</h2>{% endif %}
+
+		{{ content }}
+
+		<footer>
+			<nav>
+				<a href="https://github.com/zroger">Maintained by zroger</a> |
+        <a href="{{ site.project.link }}">Fork it on GitHub</a>
+			</nav>
+		</footer>
+	</div>
+
+<script>
+	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; // Change UA-XXXXX-X to be your site's ID
+	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+/* Typography and common elements
+----------------------------------------*/
+body {
+  background: #f0f0f0;
+  color: #222;
+  font: 13px/1.4 "Helvetica Neue","Helvetica","Arial",sans-serif;
+  line-height: 1.4;
+}
+a, a:link, a:visited, a:hover, a:active {
+  color: #4183C4;
+}
+dt {
+  font-weight: bold;
+}
+h1, h2 {
+  font-weight: 200;
+}
+h1#title a {
+  color: #222;
+  text-decoration: none;
+}
+table, figure {
+  margin-bottom: 2em;
+}
+
+figure {
+  background: #f0f0f0;
+}
+figcaption {
+  background: #bbb;
+  font-weight: bold;
+  margin: 0;
+  padding: .5em 1em;
+}
+
+table {
+  width: 100%;
+}
+thead th {
+  background: #bbb;
+  font-weight: bold;
+  text-align: left;
+}
+th, td {
+  padding: .5em 1em;
+}
+tbody tr {
+  border-bottom: solid 1px #ddd;
+}
+tbody tr.even {
+  background: #f0f0f0;
+}
+
+nav ul, nav li {
+  display: inline;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+nav a {
+  text-decoration: none;
+}
+
+.highlight {
+  background: #f0f0f0;
+}
+.highlight pre {
+  margin: 0;
+  padding: 1em;
+}
+
+/* Page Layout
+----------------------------------------*/
+#page-container {
+  background: #fff;
+  border: solid 1px #ddd;
+  margin: 50px auto;
+  padding: 50px;
+  width: 600px;
+}
+header {
+  border-bottom: solid 1px #ddd;
+  margin-bottom: 2em;
+  position: relative;
+  line-height: 50px;
+}
+header h1 {
+  margin: 0;
+}
+header nav {
+  margin-left: 4em;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+footer {
+  border-top: solid 1px #ddd;
+  font-size: 11px;
+  margin-top: 2em;
+  padding-top: 1em;
+  text-align: center;
+}
+footer a {
+  color: #444;
+}
+

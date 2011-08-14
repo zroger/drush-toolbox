@@ -1,0 +1,10 @@
+---
+layout: default
+---
+
+{{ content }}
+
+<ul>
+  <li><a href="{{ page.download_link }}">Download (tar.gz, {{ page.download_size | divided_by:1000 }} KB)</a></li>
+  <li><a href="https://github.com/{{ site.project.user }}/{{ site.project.short_name }}/tree/{{ page.version }}">Source code on GitHub</a></li>
+</ul>

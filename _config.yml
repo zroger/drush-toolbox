@@ -1,3 +1,4 @@
+name: drush-toolbox
 permalink: /releases/:title.html
 project:
   title: Drush Developers' Toolbox
@@ -5,4 +6,4 @@ project:
   project_status: 1
   link: http://github.com/zroger/drush-toolbox
   type: Modules
-  
+  user: zroger
