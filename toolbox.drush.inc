@@ -167,7 +167,7 @@ function drush_toolbox_ctags_validate() {
  */
 function drush_toolbox_ctags() {
   $ctags = drush_get_option('ctags');
-  $command = $ctags .' --langmap=php:.engine.inc.module.theme.php.test.install --php-kinds=cdfi --languages=php --recurse';
+  $command = $ctags .' --langmap=php:.engine.inc.module.theme.php.install.test.profile --php-kinds=cdfi --languages=php --recurse --exclude="\.git" --exclude="\.svn" --exclude="\.hg" --exclude="\.bzr" --exclude="CVS" --totals=yes --tag-relative=yes --regex-PHP="/abstract\s+class\s+([^ ]+)/\1/c/" --regex-PHP="/interface\s+([^ ]+)/\1/c/" --regex-PHP="/(public\s+|static\s+|abstract\s+|protected\s+|private\s+)function\s+\&?\s*([^ (]+)/\2/f/"';
   $status = drush_shell_exec($command);
   if (!$status) {
     return drush_set_error('DRUSH_TOOLBOX_CTAGS_ERROR', dt('Error running ctags'));
