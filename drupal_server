@@ -1,0 +1,42 @@
+#!/usr/local/bin/php
+<?php
+$args = array();
+
+// Build the command
+$cmd = 'drush server start ';
+unset($_SERVER['argv'][0]);
+$cmd .= implode(' ', $_SERVER['argv']);
+
+echo "running command $cmd\n";
+passthru($cmd);
+
+// Get the log file location
+
+// Does the log dir arg exists
+if (!empty($args['log-dir']))
+	$log_dir = $args['log-dir'];
+else {
+	$conf_dir = empty($args['conf-dir']) ? '.drush-server' : $args['conf-dir'];
+	$log_dir = "$conf_dir/log";
+}
+
+$log_file_path = "$log_dir/error_log";
+
+// Open Stream to screen
+$stdout = fopen('php://stdout', 'w');
+$line = 0;
+While (TRUE) {
+	// Open file the file
+	$log_file = @fopen($log_file_path, r);
+	$cur_line = 1;
+	while (($buffer = fgets($log_file, 4096)) !== false) {
+		$cur_line++;
+		if ($cur_line > $line) {
+			echo $buffer;
+			$line++;
+		}
+  }
+	fclose($log_file);
+}
+
+?>

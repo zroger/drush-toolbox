@@ -56,7 +56,7 @@ function toolbox_drush_command() {
       'host' => 'Specify the host to use as the ServerName for apache.  If not specified, drush will attempt to retrieve the hostname from the uri context (set with the --uri option), and finally fall back to using "localhost" as the default.',
       'port' => 'Specify the port for apache to listen on.  If not specified, drush will attempt to retrieve the port from the uri context (set with the --uri option), and finally fall back to using 3000 as the default.  Using a port lower than 1024 will require running this command as root.',
       'conf-dir' => 'The directory to store the configuration and log files necessary for running apache.  If not specified, drush will create a directory named ".drush-server" in the site root.',
-			'extra-conf' => 'Specify a file to include.'
+			'extra-conf' => 'Specify a file to include.',
     ),
     'examples' => array(
       'drush server' => 'Start a server using default options.',
@@ -271,6 +271,8 @@ function drush_toolbox_server($arg = 'start') {
       break;
 
     case 'stop':
+			$cmd = 'rm -r ' . $conf['log_dir'];
+			drush_shell_exec($cmd);
       drush_log(dt('Server stopped on !host:!port.', array('!host' => $conf['host'], '!port' => $conf['port'])), 'ok');
       break;
 
