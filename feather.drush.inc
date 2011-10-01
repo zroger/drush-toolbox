@@ -219,6 +219,10 @@ function drush_feather_add($alias = NULL) {
   }
 
   $vhost->save();
+  if ($server->is_running()) {
+    $server->stop();
+    $server->start();
+  }
 }
 
 /**
