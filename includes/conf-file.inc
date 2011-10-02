@@ -131,9 +131,10 @@ class FeatherVhostConfFile extends FeatherConfFile {
     $this->uri = $uri;
     $this->host = parse_url($uri, PHP_URL_HOST);
     $this->port = parse_url($uri, PHP_URL_PORT);
+    $this->name = $this->host .':'. $this->port;
 
     $server = feather_get_server();
-    $filepath = "{$server->conf_path}/sites/{$this->host}:{$this->port}.conf";
+    $filepath = "{$server->conf_path}/sites/{$this->name}.conf";
 
     parent::__construct($filepath, 'vhost.tpl.php');
   }

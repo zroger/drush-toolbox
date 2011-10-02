@@ -219,6 +219,8 @@ function drush_feather_add($alias = NULL) {
   }
 
   $vhost->save();
+  drush_log("[Added] {$vhost->name} -> {$vhost->doc_root}", 'ok');
+
   if ($server->is_running()) {
     $server->stop();
     $server->start();
