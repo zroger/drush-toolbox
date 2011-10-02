@@ -93,9 +93,14 @@ class FeatherServer {
       return FALSE;
     }
 
-    $vhost = reset($vhosts);
-    $url = "http://{$vhost->host}:{$vhost->port}/server-status?auto";
-    return drush_shell_exec("curl -s %s", $url);
+    foreach ($vhosts as $vhost) {
+      $url = "http://{$vhost->host}:{$vhost->port}/server-status?auto";
+      $running = drush_shell_exec("curl -s %s", $url);
+      if ($running) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   public function get_vhosts() {

@@ -170,4 +170,10 @@ class FeatherVhostConfFile extends FeatherConfFile {
     $httpd_conf = feather_get_conf_file();
     $httpd_conf->save();
   }
+
+  public function delete() {
+    parent::delete();
+    $httpd_conf = feather_get_conf_file();
+    $httpd_conf->save();
+  }
 }

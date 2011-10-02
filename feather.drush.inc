@@ -32,6 +32,10 @@ function feather_drush_command() {
     'description' => 'Stop the web server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['feather-restart'] = array(
+    'description' => 'Restart the web server.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
   $items['feather-status'] = array(
     'description' => 'Display the current status (running/not running) of the server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -115,6 +119,19 @@ function drush_feather_stop() {
   else {
     return drush_set_error('FEATHER_SERVER_STOP_ERROR', dt('Unable to stop the server.'));
   }
+}
+
+/**
+ * Command callback for `drush feather-restart`.
+ */
+function drush_feather_restart() {
+  $server = feather_get_server();
+
+  $server->stop();
+  while ($server->is_running()) {
+    sleep(1);
+  }
+  $server->start();
 }
 
 /**
@@ -222,8 +239,8 @@ function drush_feather_add($alias = NULL) {
   drush_log("[Added] {$vhost->name} -> {$vhost->doc_root}", 'ok');
 
   if ($server->is_running()) {
-    $server->stop();
-    $server->start();
+    drush_feather_restart();
+    drush_log('Server restarted.', 'ok');
   }
 }
 
@@ -264,7 +281,7 @@ function drush_feather_remove($alias = NULL) {
       $options[$name] = $vhost->uri;
     }
 
-    $choice = drush_choice($options, 'Choose a virtual host configuration to delete');
+    $choice = drush_choice($options, 'Choose a virtual host configuration to delete:');
 
     // Cancelled.
     if (empty($choice)) {
@@ -274,9 +291,12 @@ function drush_feather_remove($alias = NULL) {
     $vhost = $vhosts[$choice];
   }
 
-  if ($vhost->exists()) {
-    $vhost->delete();
-    drush_log(dt('!host:!port removed.', array('!host' => $vhost->host, '!port' => $vhost->port)), 'ok');
+  $vhost->delete();
+  drush_log(dt('!host:!port removed.', array('!host' => $vhost->host, '!port' => $vhost->port)), 'ok');
+
+  if ($server->is_running()) {
+    drush_feather_restart();
+    drush_log('Server restarted.', 'ok');
   }
 
 }
