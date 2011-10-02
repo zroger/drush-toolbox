@@ -199,7 +199,7 @@ function drush_feather_list() {
 
   foreach ($vhosts as $name => $vhost) {
     $rows[] = array(
-      $vhost->uri,
+      $vhost->name,
       '->',
       $vhost->doc_root,
     );
