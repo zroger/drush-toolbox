@@ -1,6 +1,6 @@
 name: drush-toolbox
 permalink: /releases/:title.html
-baseurl: /drush-toolbox
+#baseurl: /drush-toolbox
 project:
   title: Drush Developers' Toolbox
   short_name: drush-toolbox

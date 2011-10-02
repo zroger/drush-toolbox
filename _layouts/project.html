@@ -4,7 +4,11 @@ layout: default
 
 {{ content }}
 
-<h2>Releases</h2>
+
+<h2>Downloads</h2>
+
+{% if page.recommended %}
+<h3>Recommended releases</h3>
 <table>
   <thead>
     <tr>
@@ -15,17 +19,45 @@ layout: default
   </thead>
   <tbody>
   {% for post in site.posts %}
-    {% if post.layout == 'release' %}
-    <tr class="{% cycle 'odd', 'even' %}">
-      <td><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></td>
-      <td><a href="{{ post.download_link }}">tar.gz ({{ post.download_size }})</a></td>
-      <td>{{ post.date | date_to_string }}</td>
-    </tr>
-    {% endif %}
+    {% for version in page.recommended %}
+      {% if post.layout == 'release' and post.version == version %}
+        <tr class="{% cycle 'odd', 'even' %}">
+          <td><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></td>
+          <td><a href="{{ post.download_link }}">tar.gz ({{ post.download_size }})</a></td>
+          <td>{{ post.date | date_to_string }}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
   {% endfor %}
   </tbody>
 </table>
+{% endif %}
 
+{% if page.supported %}
+<h3>Supported releases</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Download</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for post in site.posts %}
+    {% for version in page.supported %}
+      {% if post.layout == 'release' and post.version == version %}
+        <tr class="{% cycle 'odd', 'even' %}">
+          <td><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></td>
+          <td><a href="{{ post.download_link }}">tar.gz ({{ post.download_size }})</a></td>
+          <td>{{ post.date | date_to_string }}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 
 <figure>
   <figcaption>Installation via drush</figcaption>

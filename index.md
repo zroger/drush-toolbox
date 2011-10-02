@@ -1,5 +1,7 @@
 ---
 layout: project
+recommended:
+- 7.x-1.0-alpha2
 ---
 
 ## Drush Developers' Toolbox
