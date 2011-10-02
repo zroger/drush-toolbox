@@ -22,44 +22,54 @@ function feather_drush_help($section) {
 function feather_drush_command() {
   $items['feather'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server'),
   );
 
   $items['feather-start'] = array(
     'description' => 'Start the web server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-start'),
   );
   $items['feather-stop'] = array(
     'description' => 'Stop the web server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-stop'),
   );
   $items['feather-restart'] = array(
     'description' => 'Restart the web server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-restart'),
   );
   $items['feather-status'] = array(
     'description' => 'Display the current status (running/not running) of the server.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-status'),
   );
   $items['feather-check-config'] = array(
     'description' => 'Check the syntax of the generated configuration files.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-check-config'),
   );
   $items['feather-error-log'] = array(
     'description' => 'Display the error log using `tail`.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-error-log'),
   );
 
   $items['feather-list'] = array(
     'description' => 'Display all configured virtual hosts.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-list'),
   );
   $items['feather-add'] = array(
     'description' => 'Add a virtual host configuration.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('server-add'),
   );
   $items['feather-remove'] = array(
     'description' => 'Remove a virtual host configuration.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('feather-rm', 'server-remove', 'server-rm'),
   );
   return $items;
 }
