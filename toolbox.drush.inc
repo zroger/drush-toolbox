@@ -34,7 +34,7 @@ function toolbox_drush_command() {
   );
   $items['toolbox-ctags'] = array(
     'description' => 'Generate a "tags" file using exuberant ctags. Requires exuberant ctags.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('ctags'),
     'options' => array(
       'ctags' => 'Specify the path to the ctags executable.  If not provided, `which ctags` will be used.',
@@ -155,6 +155,5 @@ function drush_toolbox_ctags() {
     return drush_set_error('DRUSH_TOOLBOX_CTAGS_ERROR', dt('Error running ctags'));
   }
 
-  $root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  drush_log(dt('Tag file created at !file.', array('!file' => "$root/tags")), 'ok');
+  drush_log(dt('Tag file created'), 'ok');
 }
