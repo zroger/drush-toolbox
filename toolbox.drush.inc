@@ -45,6 +45,7 @@ function toolbox_drush_command() {
       'drush ctags --ctags=/usr/local/bin/ctags' => 'Specify where to find the ctags executable, in case it is not in your $PATH variable, or not the first one found.',
     ),
   );
+
   return $items;
 }
 
