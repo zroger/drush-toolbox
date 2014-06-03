@@ -5,10 +5,10 @@
 */
 
 /**
-* Root directory of Drupal installation.
-*/
-define('DRUPAL_ROOT', getcwd());
+ * Root directory of Drupal installation.
+ */
 
-require_once DRUPAL_ROOT . '/core/includes/bootstrap.inc';
+require_once getcwd() . '/core/vendor/autoload.php';
+require_once getcwd() . '/core/includes/bootstrap.inc';
 
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
